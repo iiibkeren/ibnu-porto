@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ibnu Choiri — Portofolio UGC</title>
+<!-- Tailwind CSS CDN dengan plugin -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Plus Jakarta Sans & Syne untuk tampilan editorial yang chic -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Syne:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Konfigurasi Tailwind -->
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Syne"', 'sans-serif'],
+          },
+          colors: {
+            deck: {
+              bg: '#EBEBEB',
+              card: '#F6F6F6',
+              dark: '#111111',
+              text: '#1C1C1C',
+              muted: '#71717A',
+              border: '#E2E2E2'
+            }
+          },
+          aspectRatio: {
+            'slide': '16 / 9',
+            'reel': '9 / 16'
+          }
+        }
+      }
+    }
+  </script>
+<!-- Gaya Kustom untuk Proporsi Slide & Tampilan -->
+<style data-purpose="deck-styles">
+    body {
+      background-color: #212121;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    .slide-card {
+      width: 100%;
+      max-width: 1100px;
+      aspect-ratio: 16 / 9;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+      border-radius: 4px;
+    }
+
+    .tracking-widest-plus {
+      letter-spacing: 0.18em;
+    }
+
+    .deck-carousel-item {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      opacity: 0;
+      transform: scale(1.03);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .deck-carousel-item.is-active {
+      opacity: 1;
+      transform: scale(1);
+      z-index: 1;
+    }
+
+    .deck-carousel {
+      cursor: pointer;
+    }
+
+    .deck-carousel:focus-visible {
+      outline: 2px solid rgba(17, 17, 17, 0.45);
+      outline-offset: 4px;
+    }
+
+    .deck-carousel-dots {
+      position: absolute;
+      bottom: 0.85rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.35rem;
+      z-index: 10;
+    }
+
+    .deck-carousel-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 9999px;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+      opacity: 0.4;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .deck-carousel-dot.is-active {
+      opacity: 1;
+      transform: scale(1.3);
+    }
+
+    .deck-anim-ready .slide-card > * {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .deck-anim-ready .slide-card.is-visible > * {
+      opacity: 1;
+      transform: none;
+      transition: opacity 0.8s ease, transform 0.9s cubic-bezier(0.22, 0.68, 0.24, 1);
+    }
+
+    .deck-anim-ready .slide-card.is-visible > *:nth-child(1) { transition-delay: 0.05s; }
+    .deck-anim-ready .slide-card.is-visible > *:nth-child(2) { transition-delay: 0.18s; }
+    .deck-anim-ready .slide-card.is-visible > *:nth-child(3) { transition-delay: 0.31s; }
+    .deck-anim-ready .slide-card.is-visible > *:nth-child(4) { transition-delay: 0.44s; }
+
+    #slide-2::before, #slide-3::before, #slide-4::before,
+    #slide-5::before, #slide-6::before, #slide-7::before, #slide-8::before {
+      content: '';
+      position: absolute;
+      top: -5rem;
+      right: -4rem;
+      width: 16rem;
+      height: 16rem;
+      border: 1px solid rgba(17, 17, 17, 0.1);
+      border-radius: 9999px;
+      pointer-events: none;
+      z-index: 0;
+      animation: deckDrift 18s ease-in-out infinite alternate;
+    }
+
+    #slide-2::after, #slide-3::after, #slide-4::after,
+    #slide-5::after, #slide-6::after, #slide-7::after, #slide-8::after {
+      content: '';
+      position: absolute;
+      bottom: 3.5rem;
+      left: 2rem;
+      width: 0.85rem;
+      height: 0.85rem;
+      border: 1px solid rgba(17, 17, 17, 0.3);
+      transform: rotate(45deg);
+      pointer-events: none;
+      z-index: 0;
+      animation: deckTwinkle 6s ease-in-out infinite;
+    }
+
+    #slide-4::before { top: -6rem; right: auto; left: -5rem; }
+    #slide-5::after { left: auto; right: 2.5rem; bottom: 2rem; }
+    #slide-6::before { top: auto; bottom: -6rem; }
+    #slide-7::after { left: calc(50% - 0.45rem); bottom: 1.1rem; }
+    #slide-8::after { left: 2.5rem; bottom: 2.5rem; }
+
+    @keyframes deckDrift {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(-1.5rem, 1.75rem, 0); }
+    }
+
+    @keyframes deckTwinkle {
+      0%, 100% { transform: rotate(45deg) scale(1); opacity: 0.4; }
+      50% { transform: rotate(45deg) scale(1.4); opacity: 1; }
+    }
+
+    .deck-zoomable {
+      cursor: zoom-in;
+      transition: transform 0.45s ease, filter 0.3s ease;
+    }
+
+    .deck-zoomable:hover {
+      filter: brightness(1.06) saturate(1.05);
+    }
+
+    .deck-lightbox {
+      display: none;
+    }
+
+    .deck-lightbox.is-open {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: deckLightboxFade 0.25s ease;
+    }
+
+    .deck-lightbox.is-open .deck-lightbox-image {
+      animation: deckLightboxPop 0.32s cubic-bezier(0.22, 0.68, 0.24, 1);
+    }
+
+    @keyframes deckLightboxFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes deckLightboxPop {
+      from { opacity: 0; transform: scale(0.94); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .deck-anim-ready .slide-card > * { opacity: 1; transform: none; }
+      .deck-carousel-item { opacity: 0; }
+      .deck-carousel-item.is-active { opacity: 1; }
+      .deck-carousel-dot { opacity: 0.4; }
+      .slide-card::before, .slide-card::after { animation: none; }
+      .deck-zoomable { transition: none; }
+      .deck-lightbox.is-open, .deck-lightbox.is-open .deck-lightbox-image { animation: none; }
+    }
+  </style>
+<script>document.documentElement.classList.add('deck-anim-ready');</script>
+</head>
+<body class="text-deck-text py-12 px-4 sm:px-6 flex flex-col items-center gap-12 selection:bg-black selection:text-white">
+<!-- Navigasi Atas yang Lengket -->
+<nav class="sticky top-4 z-50 bg-black/85 backdrop-blur-md px-6 py-2.5 rounded-full border border-white/10 text-white flex items-center gap-6 text-xs tracking-wider uppercase font-medium shadow-2xl">
+<span class="font-bold tracking-widest text-zinc-300">Ibnu Choiri</span>
+<span class="text-zinc-600">|</span>
+<div class="flex items-center gap-4 text-zinc-400">
+<a class="hover:text-white transition-colors" href="#slide-1">01 Sampul</a>
+<a class="hover:text-white transition-colors" href="#slide-2">02 Tentang</a>
+<a class="hover:text-white transition-colors" href="#slide-3">03 Keahlian</a>
+<a class="hover:text-white transition-colors" href="#slide-4">04 Tugas</a>
+<a class="hover:text-white transition-colors" href="#slide-5">05</a>
+<a class="hover:text-white transition-colors" href="#slide-6">06 Konsep</a>
+<a class="hover:text-white transition-colors" href="#slide-7">07 Kontak</a>
+<a class="hover:text-white transition-colors" href="#slide-8">08 Penutup</a>
+</div>
+</nav>
+<!-- MULAI: Slide 1 - Sampul -->
+<section class="slide-card bg-black text-white relative flex flex-col justify-between p-10 md:p-14 select-none" id="slide-1">
+<!-- Header Atas -->
+<div class="flex justify-between items-start z-10">
+<span class="text-[11px] font-semibold tracking-widest uppercase text-white/90">Ibnu Choiri</span>
+<span class="text-[10px] tracking-widest uppercase text-zinc-400">KREATOR UGC</span>
+</div>
+<!-- Potret Latar & Elemen Cahaya -->
+<div class="absolute inset-0 z-0 overflow-hidden">
+<!-- Tampilan Editorial Hitam Putih di Sisi Kanan -->
+<img alt="Potret Ibnu Choiri sebagai kreator UGC" class="absolute right-0 top-0 h-full w-2/3 object-cover object-top grayscale brightness-95 opacity-60 mix-blend-screen" src="image/foto%203.jpeg"/>
+<!-- Gradien dari Gelap di Kiri ke Transparan di Kanan -->
+<div class="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent w-3/4"></div>
+<!-- Aksen Bintang Kilau -->
+<svg class="absolute top-1/4 left-1/3 text-white/50 w-5 h-5" fill="currentColor" viewbox="0 0 24 24"><path d="M12 0L14 10L24 12L14 14L12 24L10 14L0 12L10 10L12 0Z"></path></svg>
+<svg class="absolute bottom-1/3 left-1/4 text-white/40 w-3 h-3" fill="currentColor" viewbox="0 0 24 24"><path d="M12 0L14 10L24 12L14 14L12 24L10 14L0 12L10 10L12 0Z"></path></svg>
+<svg class="absolute bottom-16 right-1/2 text-white/60 w-4 h-4" fill="currentColor" viewbox="0 0 24 24"><path d="M12 0L14 10L24 12L14 14L12 24L10 14L0 12L10 10L12 0Z"></path></svg>
+<div class="absolute top-12 left-20 w-1.5 h-1.5 rounded-full bg-white/70"></div>
+</div>
+<!-- Judul Utama di Tengah -->
+<div class="relative z-10 my-auto">
+<h1 class="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tight leading-none text-white">
+        Portofolio
+      </h1>
+<div class="flex items-baseline justify-end md:justify-center md:translate-x-20 -mt-2 md:-mt-6">
+<h2 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-zinc-300">
+          Pribadi
+        </h2>
+<span class="text-xs text-zinc-400 ml-4 font-mono">★</span>
+</div>
+</div>
+<!-- Metadata Bawah -->
+<div class="relative z-10 flex justify-between items-end text-[10px] tracking-widest text-zinc-400 uppercase">
+<div class="flex flex-col gap-1">
+<span>Desain Komunikasi Visual</span>
+<span>SMK Negeri 10 Surabaya</span>
+</div>
+</div>
+</section>
+<!-- SELESAI: Slide 1 - Sampul -->
+<!-- MULAI: Slide 2 - Latar Belakang Saya -->
+<section class="slide-card bg-[#F4F4F4] text-[#111111] p-10 md:p-14 flex flex-col justify-between" id="slide-2">
+<!-- Header -->
+<div class="flex justify-between items-center text-[10px] font-bold tracking-widest uppercase border-b border-black/10 pb-4">
+<span>Ibnu Choiri</span>
+<span class="text-zinc-400 font-mono">02</span>
+</div>
+<!-- Isi Konten -->
+<div class="grid grid-cols-12 gap-8 items-center my-auto">
+<!-- Kiri: Swafoto Kreator / Maket -->
+<div class="col-span-5 relative flex items-center justify-center">
+<div aria-label="Galeri foto Ibnu Choiri" aria-roledescription="carousel" class="deck-carousel relative w-64 h-80 rounded-2xl overflow-hidden shadow-xl bg-zinc-200" tabindex="0">
+<img alt="Foto Ibnu Choiri" class="deck-carousel-item is-active" src="image/foto%20ibnu.jpeg"/>
+<img alt="Foto Ibnu Choiri" class="deck-carousel-item" src="image/foto%20ibnu%202.jpeg"/>
+<img alt="Foto Ibnu Choiri" class="deck-carousel-item" src="image/foto%20ibnu%203.jpeg"/>
+<div class="deck-carousel-dots">
+<span class="deck-carousel-dot is-active"></span>
+<span class="deck-carousel-dot"></span>
+<span class="deck-carousel-dot"></span>
+</div>
+<button class="deck-zoom-trigger absolute top-3 left-3 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-sm transition-colors hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" title="Tampilkan foto lebih besar" type="button">
+<svg aria-hidden="true" class="pointer-events-none h-4 w-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.4-3.4"></path><path d="M11 8.5v5M8.5 11h5"></path></svg>
+</button>
+<!-- Detail Siluet Ponsel Perak -->
+<div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md p-1.5 rounded-xl shadow-lg border border-black/10 flex items-center gap-1.5 z-10">
+<div class="w-2.5 h-2.5 rounded-full bg-zinc-800"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-zinc-400"></div>
+</div>
+</div>
+</div>
+<!-- Kanan: Biodata -->
+<div class="col-span-7 flex flex-col justify-center pl-4 pr-6">
+<h2 class="text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-tight uppercase text-black mb-6">
+          LATAR<br/>BELAKANG SAYA
+        </h2>
+<div class="space-y-4 text-xs md:text-sm text-zinc-700 leading-relaxed font-normal max-w-lg">
+<p>
+<span class="font-semibold text-black">Halo, saya Ibnu Choiri Hammad.</span><br/>
+            Saya merupakan siswa kelas XII jurusan Desain Komunikasi Visual (DKV) di SMK Negeri 10 Surabaya. Selama menempuh pendidikan, saya mempelajari berbagai bidang kreatif seperti desain grafis, Adobe Illustrator, Photoshop, fotografi dan pembuatan desain UI/UX.
+          </p>
+<p>
+            Saya memiliki ketertarikan dalam mengembangkan ide menjadi karya yang kreatif, menarik, dan memiliki karakter. Melalui pendidikan di bidang DKV, saya terus berusaha meningkatkan kemampuan serta pengalaman sebagai bekal untuk melanjutkan pendidikan dan memasuki dunia kerja di bidang kreatif.
+          </p>
+</div>
+</div>
+</div>
+<!-- Footer Slide -->
+<div class="text-[9px] uppercase tracking-widest text-zinc-400 flex justify-between">
+<span>KREATOR UGC &amp; GAYA HIDUP</span>
+<span>BERBASIS DI TALLINN</span>
+</div>
+</section>
+<!-- SELESAI: Slide 2 - Latar Belakang Saya -->
+<!-- MULAI: Slide 3 - Keahlian Pribadi -->
+<section class="slide-card bg-[#F4F4F4] text-[#111111] p-10 md:p-14 flex flex-col justify-between" id="slide-3">
+<!-- Header -->
+<div class="flex justify-between items-center text-[10px] font-bold tracking-widest uppercase border-b border-black/10 pb-4">
+<span>Ibnu Choiri</span>
+<span class="text-zinc-400 font-mono">03</span>
+</div>
+<!-- Isi: Judul di Kiri vs Lingkar Keahlian Interaktif di Kanan -->
+<div class="grid grid-cols-12 gap-8 items-center my-auto">
+<!-- Kolom Kiri -->
+<div class="col-span-5 space-y-4">
+<h2 class="text-4xl md:text-5xl font-extrabold tracking-tight uppercase leading-none">
+          KEAHLIAN<br/>PRIBADI
+        </h2>
+<p class="text-[11px] md:text-xs text-zinc-500 uppercase tracking-widest leading-relaxed max-w-xs pt-2">
+          MENGEMBANGKAN KEAHLIAN DALAM EDITING FOTO &amp; VIDEO, GRAPHIC DESIGN, FOTOGRAFI, DAN VIDEOGRAFI UNTUK MENCIPTAKAN KARYA VISUAL YANG MENARIK DAN BERKARAKTER.
+        </p>
+</div>
+<!-- Kolom Kanan: Diagram Lingkar Keahlian Minimalis -->
+<div class="col-span-7 relative h-72 flex items-center justify-center">
+<!-- Lingkar 1: Tengah Atas -->
+<div class="absolute -top-2 left-12 w-36 h-36 rounded-full bg-[#111111] text-white flex flex-col items-center justify-center text-center p-3 shadow-lg hover:scale-105 transition-transform duration-300">
+<img alt="Logo Blender" class="h-16 w-16 rounded-full bg-white object-contain p-2 shadow-sm" src="image/logo%20blender.png"/>
+</div>
+<!-- Lingkar 2: Tengah Bawah Kiri -->
+<div class="absolute bottom-2 right-44 w-32 h-32 rounded-full bg-[#1C1C1C] text-white flex flex-col items-center justify-center text-center p-3 shadow-lg hover:scale-105 transition-transform duration-300">
+<img alt="Logo Photoshop" class="h-12 w-12 rounded-full bg-white object-contain p-1.5 shadow-sm" src="image/Logo%20Photoshop.jpg"/>
+</div>
+<!-- Lingkar 3: Bawah Kanan -->
+<div class="absolute bottom-2 right-6 w-32 h-32 rounded-full bg-[#111111] text-white flex flex-col items-center justify-center text-center p-3 shadow-lg hover:scale-105 transition-transform duration-300">
+<img alt="Logo Adobe Illustrator" class="h-12 w-12 rounded-full bg-white object-contain p-1.5 shadow-sm" src="image/logo-illustrator.png"/>
+</div>
+</div>
+</div>
+<!-- Catatan Footer -->
+<div class="text-[9px] uppercase tracking-widest text-zinc-400 flex justify-between">
+<span>SISWA JURUSAN DESAIN KOMUNIKASI VISUAL</span>
+<span>03 / 08</span>
+</div>
+</section>
+<!-- SELESAI: Slide 3 - Keahlian Pribadi -->
+<!-- MULAI: Slide 4 - Tugas -->
+<section class="slide-card bg-[#F4F4F4] text-[#111111] p-8 md:p-12 flex flex-col justify-between" id="slide-4">
+<!-- Header -->
+<div class="flex justify-between items-center text-[10px] font-bold tracking-widest uppercase border-b border-black/10 pb-3">
+<span class="font-extrabold text-sm md:text-base tracking-normal">TUGAS</span>
+<span class="text-zinc-400 font-mono">04</span>
+</div>
+<!-- Grid 5 Dokumen Tugas -->
+<div class="grid grid-cols-5 gap-3.5 my-auto">
+<!-- Tugas 01 -->
+<div class="flex flex-col items-center group">
+<div class="w-full h-[260px] md:h-[300px] bg-white rounded-lg overflow-hidden relative shadow-md ring-1 ring-black/5 group-hover:shadow-xl group-hover:-translate-y-0.5 transition-all">
+<img alt="Halaman 1 PDF Tugas Modul 1" class="w-full h-full object-contain p-1.5" loading="lazy" src="image/preview/modul-1.png"/>
+</div>
+<a class="text-[9px] font-semibold text-zinc-600 hover:text-black mt-2 tracking-wider uppercase" href="image/TUGAS%20MODUL%201.pdf" rel="noopener" target="_blank">MODUL 1</a>
+</div>
+<!-- Tugas 02 -->
+<div class="flex flex-col items-center group">
+<div class="w-full h-[260px] md:h-[300px] bg-white rounded-lg overflow-hidden relative shadow-md ring-1 ring-black/5 group-hover:shadow-xl group-hover:-translate-y-0.5 transition-all">
+<img alt="Halaman 1 PDF Tugas Modul 2" class="w-full h-full object-contain p-1.5" loading="lazy" src="image/preview/modul-2.png"/>
+</div>
+<a class="text-[9px] font-semibold text-zinc-600 hover:text-black mt-2 tracking-wider uppercase" href="image/TUGAS%20MODUL%202.pdf" rel="noopener" target="_blank">MODUL 2</a>
+</div>
+<!-- Tugas 03 -->
+<div class="flex flex-col items-center group">
+<div class="w-full h-[260px] md:h-[300px] bg-white rounded-lg overflow-hidden relative shadow-md ring-1 ring-black/5 group-hover:shadow-xl group-hover:-translate-y-0.5 transition-all">
+<img alt="Halaman 1 PDF Tugas Modul 3" class="w-full h-full object-contain p-1.5" loading="lazy" src="image/preview/modul-3.png"/>
+</div>
+<a class="text-[9px] font-semibold text-zinc-600 hover:text-black mt-2 tracking-wider uppercase" href="image/Modul%203.pdf" rel="noopener" target="_blank">MODUL 3</a>
+</div>
+<!-- Tugas 04 -->
+<div class="flex flex-col items-center group">
+<div class="w-full h-[260px] md:h-[300px] bg-white rounded-lg overflow-hidden relative shadow-md ring-1 ring-black/5 group-hover:shadow-xl group-hover:-translate-y-0.5 transition-all">
+<img alt="Halaman 1 PDF Tugas Modul 4" class="w-full h-full object-contain p-1.5" loading="lazy" src="image/preview/modul-4.png"/>
+</div>
+<a class="text-[9px] font-semibold text-zinc-600 hover:text-black mt-2 tracking-wider uppercase" href="image/Modul%204.pdf" rel="noopener" target="_blank">MODUL 4</a>
+</div>
+<!-- Tugas 05 -->
+<div class="flex flex-col items-center group">
+<div class="w-full h-[260px] md:h-[300px] bg-white rounded-lg overflow-hidden relative shadow-md ring-1 ring-black/5 group-hover:shadow-xl group-hover:-translate-y-0.5 transition-all">
+<img alt="Halaman 1 PDF Tugas GSM" class="w-full h-full object-contain p-1.5" loading="lazy" src="image/preview/gsm-benu.png"/>
+</div>
+<a class="text-[9px] font-semibold text-zinc-600 hover:text-black mt-2 tracking-wider uppercase" href="image/GSM%20BENU%20(1).pdf" rel="noopener" target="_blank">TUGAS GSM</a>
+</div>
+</div>
+<!-- Metadata footer -->
+<div class="text-[9px] uppercase tracking-widest text-zinc-400 flex justify-between">
+<span>FORMAT DOKUMEN PDF</span>
+<span>PORTOFOLIO TUGAS</span>
+</div>
+</section>
+<!-- SELESAI: Slide 4 - Tugas -->
+<!-- MULAI: Slide 5 - Fotografi & Tracing AI -->
+<section class="slide-card bg-[#F4F4F4] text-[#111111] p-8 md:p-12 flex flex-col justify-between" id="slide-5">
+<!-- Grid Perbandingan Visual -->
+<div class="grid grid-cols-2 gap-8 my-auto items-center">
+<!-- Kiri: FOTOGRAFI - Grid Foto Karya -->
+<div class="bg-white p-2.5 rounded-lg shadow-sm border border-zinc-200">
+<div class="text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-2">
+<span>FOTOGRAFI</span>
+</div>
+<div class="grid grid-cols-3 gap-1 aspect-square bg-zinc-100 p-1">
+<img alt="Foto 1" class="w-full h-full object-cover" src="image/foto%201.jpeg"/>
+<img alt="Foto 2" class="w-full h-full object-cover" src="image/foto%202.jpeg"/>
+<img alt="Foto 3" class="w-full h-full object-cover" src="image/foto%203.jpeg"/>
+<img alt="Foto 4" class="w-full h-full object-cover" src="image/foto%204.jpeg"/>
+<img alt="Foto 5" class="w-full h-full object-cover" src="image/foto%205.jpeg"/>
+<img alt="Foto 6" class="w-full h-full object-cover" src="image/foto%206.jpeg"/>
+<div class="w-full h-full bg-zinc-200"></div>
+<div class="w-full h-full bg-zinc-200"></div>
+<div class="w-full h-full bg-zinc-200"></div>
+</div>
+</div>
+<!-- Kanan: TRACING AI - Grid Hasil Tracing AI -->
+<div class="bg-white p-2.5 rounded-lg shadow-sm border border-zinc-200">
+<div class="text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-2">
+<span>TRACING AI</span>
+</div>
+<div class="grid grid-cols-3 gap-1 aspect-square bg-zinc-100 p-1">
+<img alt="Karya mewarnai" class="w-full h-full object-cover" src="image/mewarnai.png"/>
+<img alt="Ilustrasi burung" class="w-full h-full object-cover" src="image/burung.png"/>
+<img alt="Typografi 2" class="w-full h-full object-cover" src="image/typografi%202.png"/>
+<img alt="Gambar ninja" class="w-full h-full object-cover" src="image/ninja.png"/>
+<img alt="Logo" class="w-full h-full object-cover" src="image/logo.png"/>
+<img alt="Karakter game" class="w-full h-full object-cover" src="image/karakter.png"/>
+<div class="w-full h-full bg-zinc-200"></div>
+<div class="w-full h-full bg-zinc-200"></div>
+<div class="w-full h-full bg-zinc-200"></div>
+</div>
+</div>
+<!-- Catatan Bawah & Keterangan -->
+<div class="flex justify-between items-end border-t border-black/10 pt-3">
+<p class="text-[8px] uppercase tracking-widest text-zinc-500 max-w-2xl leading-normal">
+        KONSEP VISUAL YANG DIPERBARUI DIRAJUNKAN DENGAN FOKUS PADA SUASANA, KUALITAS PELAYANAN, DAN PRESENTASI MEREK UNTUK MENIMBULKAN MINAT DAN MENDORONG TAMU POTENSIAL UNTUK MENYUSULI RESTORAN. PROYEK KONSEP DIBUAT UNTUK TUJUAN PORTOFOLIO. GAMBAR DIGUNAKAN SEPADANYA UNTUK KEPERLUAN DEMONSTRASI.
+      </p>
+<span class="text-[10px] font-mono font-bold text-zinc-400">05</span>
+</div>
+</section>
+<!-- SELESAI: Slide 5 - Fotografi & Tracing AI -->
+<!-- MULAI: Slide 6 -->
+<section class="slide-card bg-[#F4F4F4] text-[#111111] p-10 md:p-14 flex flex-col justify-between" id="slide-6">
+<!-- Header -->
+<div class="flex justify-between items-start text-[10px] font-bold tracking-widest uppercase">
+<div class="space-y-1">
+<span class="text-zinc-400 font-mono block">06</span>
+</div>
+<span class="text-zinc-600">Ibnu Choiri</span>
+</div>
+<!-- 3 Maket Reels Bernuansa Gelap -->
+<div class="grid grid-cols-3 gap-6 max-w-2xl mx-auto w-full my-auto">
+<!-- Video 01 -->
+<div class="flex flex-col items-center group">
+<div class="w-full aspect-reel bg-zinc-900 rounded-lg overflow-hidden shadow-lg border border-black/20 relative group-hover:scale-105 transition-transform duration-300">
+<img alt="Screenshot plankton" class="w-full h-full object-cover brightness-75" src="image/sc%20plangton.png"/>
+</div>
+<span class="text-[9px] font-bold uppercase tracking-widest text-zinc-600 mt-3">CONTOH 01</span>
+</div>
+<!-- Video 02 -->
+<div class="flex flex-col items-center group">
+<div class="w-full aspect-reel bg-zinc-900 rounded-lg overflow-hidden shadow-lg border border-black/20 relative group-hover:scale-105 transition-transform duration-300">
+<img alt="Screenshot lebah" class="w-full h-full object-cover brightness-75" src="image/sc%20lebah.png"/>
+</div>
+<span class="text-[9px] font-bold uppercase tracking-widest text-zinc-600 mt-3">CONTOH 02</span>
+</div>
+<!-- Video 03 -->
+<div class="flex flex-col items-center group">
+<div class="w-full aspect-reel bg-zinc-900 rounded-lg overflow-hidden shadow-lg border border-black/20 relative group-hover:scale-105 transition-transform duration-300">
+<img alt="Screenshot karakter" class="w-full h-full object-cover brightness-75" src="image/sc%20karakter.png"/>
+</div>
+<span class="text-[9px] font-bold uppercase tracking-widest text-zinc-600 mt-3">CONTOH 03</span>
+</div>
+</div>
+<!-- Metadata footer -->
+<div class="text-[9px] uppercase tracking-widest text-zinc-400 flex justify-between">
+<span>PERHOTELAN MEWAH &amp; GASTRONOMI</span>
+<span>STORYBOARD KONTEN PENDEK</span>
+</div>
+</section>
+<!-- SELESAI: Slide 6 -->
+<!-- MULAI: Slide 7 - Mari Terhubung -->
+<section class="slide-card bg-[#F4F4F4] text-[#111111] p-10 md:p-14 flex flex-col justify-between" id="slide-7">
+<!-- Header -->
+<div class="flex justify-between items-center text-[10px] font-bold tracking-widest uppercase border-b border-black/10 pb-4">
+<span>Ibnu Choiri</span>
+<span class="text-zinc-400 font-mono">07</span>
+</div>
+<!-- Isi Tengah: Kontak & Maket Profil Instagram -->
+<div class="grid grid-cols-12 gap-8 items-center my-auto">
+<!-- Kiri: Detail Kontak -->
+<div class="col-span-5 space-y-4">
+<div class="flex items-center gap-3 text-xs md:text-sm font-medium">
+<span class="w-6 h-6 rounded-full bg-zinc-200 flex items-center justify-center text-zinc-700 text-xs">@</span>
+<span class="text-zinc-800">@IbnuChoiri</span>
+</div>
+<div class="flex items-center gap-3 text-xs md:text-sm font-medium">
+<span class="w-6 h-6 rounded-full bg-zinc-200 flex items-center justify-center text-zinc-700 text-xs">✉</span>
+<span class="text-zinc-800">ibnuchoiri.2110@Gmail.com</span>
+</div>
+<div class="flex items-center gap-3 text-xs md:text-sm font-medium">
+<span class="w-6 h-6 rounded-full bg-zinc-200 flex items-center justify-center text-zinc-700 text-xs">📍</span>
+<span class="text-zinc-800">Surabaya, Jawa Timur</span>
+</div>
+</div>
+<!-- Kanan: Tiga Maket Tangkapan Layar Profil Instagram -->
+<div class="col-span-7 flex items-center justify-end gap-3">
+<!-- Maket 1 -->
+<a class="block" href="https://wa.me/6281235292968" rel="noopener noreferrer" target="_blank">
+<img alt="Foto Wasap" class="w-32 aspect-reel object-cover rounded-lg shadow-sm border border-zinc-200 bg-zinc-200" src="image/foto%20wasap.jpeg"/>
+</a>
+<!-- Maket 2 -->
+<a class="block" href="https://www.tiktok.com/@benbenuuu?_r=1&amp;_t=ZS-9A1w1Azm76o" rel="noopener noreferrer" target="_blank">
+<img alt="Foto TikTok" class="w-36 aspect-reel object-cover rounded-lg shadow-md border border-zinc-200 scale-105 z-10" src="image/foto%20tikotok.jpeg"/>
+</a>
+<!-- Maket 3 -->
+<a class="block" href="https://www.instagram.com/ibnusetengahserigala?stkn=MWhwajRtY3hmYzBicw==" rel="noopener noreferrer" target="_blank">
+<img alt="Foto Ige" class="w-32 aspect-reel object-cover rounded-lg shadow-sm border border-zinc-200 bg-zinc-200" src="image/foto%20ige.jpeg"/>
+</a>
+</div>
+</div>
+<!-- Judul CTA Besar di Bawah -->
+<div class="flex justify-between items-baseline pt-4 border-t border-black/10">
+<h2 class="text-3xl md:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-black">
+        Follow akun tersebut
+      </h2>
+<span class="text-[10px] font-mono text-zinc-400">TERBUKA UNTUK KOLABORASI</span>
+</div>
+</section>
+<!-- SELESAI: Slide 7 - Mari Terhubung -->
+<!-- MULAI: Slide 8 - Terima Kasih -->
+<section class="slide-card bg-[#F4F4F4] text-[#111111] p-8 md:p-10 flex flex-col justify-between relative overflow-hidden" id="slide-8">
+<!-- Header -->
+<div class="flex justify-between items-center text-[10px] font-bold tracking-widest uppercase z-10">
+<span class="text-zinc-400 font-mono">08</span>
+<span>PORTOFOLIO UGC</span>
+</div>
+<!-- Pesan Terima Kasih di Tengah -->
+<div class="relative z-10 flex flex-col items-center justify-center text-center my-auto w-full">
+<h2 class="text-4xl md:text-6xl lg:text-[7rem] font-black uppercase tracking-tighter leading-none text-black">
+        TERIMA KASIH
+      </h2>
+</div>
+</section>
+<!-- SELESAI: Slide 8 - Terima Kasih -->
+<!-- Kontrol Deck / Info Footer -->
+<footer class="text-center text-zinc-500 text-xs pb-12">
+<p>Ibnu Choiri — PORTOFOLIO UGC &amp; GAYA HIDUP © 2024</p>
+</footer>
+<!-- Lightbox Highlight Foto -->
+<div aria-hidden="true" aria-label="Pratinjau foto" class="deck-lightbox fixed inset-0 z-[100]" id="deck-lightbox" role="dialog">
+<div class="deck-lightbox-backdrop absolute inset-0 bg-black/90 backdrop-blur-sm"></div>
+<button class="deck-lightbox-close absolute top-4 right-4 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-lg leading-none text-white transition-colors hover:bg-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:top-6 sm:right-6" type="button" aria-label="Tutup pratinjau">&#10005;</button>
+<button class="deck-lightbox-prev absolute left-2 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-2xl leading-none text-white transition-colors hover:bg-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:left-6" type="button" aria-label="Foto sebelumnya">&#8249;</button>
+<button class="deck-lightbox-next absolute right-2 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-2xl leading-none text-white transition-colors hover:bg-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:right-6" type="button" aria-label="Foto berikutnya">&#8250;</button>
+<figure class="relative z-10 flex max-w-full flex-col items-center gap-4 p-6 sm:p-10">
+<img alt="" class="deck-lightbox-image max-h-[72vh] max-w-full rounded-lg object-contain shadow-2xl ring-1 ring-white/20" src=""/>
+<figcaption class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-[10px] uppercase tracking-widest">
+<span class="deck-lightbox-group text-white/40"></span>
+<span class="text-white/20">/</span>
+<span class="deck-lightbox-caption text-white"></span>
+<span class="text-white/20">·</span>
+<span class="deck-lightbox-counter font-mono text-white/50"></span>
+<a class="deck-lightbox-source hidden text-white/70 underline underline-offset-4 transition-colors hover:text-white" rel="noopener noreferrer" target="_blank">Buka sumber &#8599;</a>
+</figcaption>
+</figure>
+</div>
+<script data-purpose="deck-motion">
+(function () {
+  var slides = document.querySelectorAll('.slide-card');
+  if (!('IntersectionObserver' in window)) {
+    Array.prototype.forEach.call(slides, function (slide) { slide.classList.add('is-visible'); });
+    return;
+  }
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  Array.prototype.forEach.call(slides, function (slide) { observer.observe(slide); });
+})();
+(function () {
+  var carousels = document.querySelectorAll('.deck-carousel');
+  Array.prototype.forEach.call(carousels, function (carousel) {
+    var items = carousel.querySelectorAll('.deck-carousel-item');
+    var dots = carousel.querySelectorAll('.deck-carousel-dot');
+    var index = 0;
+    Array.prototype.forEach.call(items, function (item, i) {
+      if (item.classList.contains('is-active')) { index = i; }
+    });
+    function show(next) {
+      index = (next + items.length) % items.length;
+      Array.prototype.forEach.call(items, function (item, i) {
+        item.classList.toggle('is-active', i === index);
+      });
+      Array.prototype.forEach.call(dots, function (dot, i) {
+        dot.classList.toggle('is-active', i === index);
+      });
+    }
+    carousel.addEventListener('click', function (event) {
+      var dot = event.target.closest ? event.target.closest('.deck-carousel-dot') : null;
+      if (dot) {
+        show(Array.prototype.indexOf.call(dots, dot));
+        return;
+      }
+      show(index + 1);
+    });
+    carousel.addEventListener('keydown', function (event) {
+      if (event.key === 'ArrowRight') { show(index + 1); }
+      if (event.key === 'ArrowLeft') { show(index - 1); }
+    });
+    show(index);
+  });
+})();
+(function () {
+  var lightbox = document.getElementById('deck-lightbox');
+  if (!lightbox) { return; }
+  var image = lightbox.querySelector('.deck-lightbox-image');
+  var captionEl = lightbox.querySelector('.deck-lightbox-caption');
+  var groupEl = lightbox.querySelector('.deck-lightbox-group');
+  var counterEl = lightbox.querySelector('.deck-lightbox-counter');
+  var sourceEl = lightbox.querySelector('.deck-lightbox-source');
+  var closeBtn = lightbox.querySelector('.deck-lightbox-close');
+  var prevBtn = lightbox.querySelector('.deck-lightbox-prev');
+  var nextBtn = lightbox.querySelector('.deck-lightbox-next');
+  var items = [];
+  var currentGroup = [];
+  var position = 0;
+  var lastFocus = null;
+
+  var labels = {};
+  Array.prototype.forEach.call(document.querySelectorAll('nav a[href^="#slide-"]'), function (link) {
+    labels[link.getAttribute('href').slice(1)] = (link.textContent || '').trim();
+  });
+
+  function pad(value) { return (value < 10 ? '0' : '') + value; }
+
+  function nearest(element, selector) {
+    return element && element.closest ? element.closest(selector) : null;
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.slide-card img'), function (img) {
+    var section = nearest(img, '.slide-card');
+    var link = nearest(img, 'a[href]');
+    items.push({
+      img: img,
+      src: img.getAttribute('src'),
+      alt: img.getAttribute('alt') || 'Foto',
+      href: link ? link.getAttribute('href') : '',
+      group: section ? section.id : 'deck',
+      label: section ? (labels[section.id] || '') : ''
+    });
+    if (!nearest(img, '.deck-carousel')) {
+      img.classList.add('deck-zoomable');
+      if (!link && !img.hasAttribute('tabindex')) {
+        img.setAttribute('tabindex', '0');
+        img.setAttribute('role', 'button');
+      }
+    }
+  });
+
+  function render() {
+    var item = currentGroup[position];
+    if (!item) { return; }
+    image.setAttribute('src', item.src);
+    image.setAttribute('alt', item.alt);
+    captionEl.textContent = item.alt;
+    groupEl.textContent = item.label;
+    counterEl.textContent = pad(position + 1) + ' / ' + pad(currentGroup.length);
+    if (item.href) {
+      sourceEl.setAttribute('href', item.href);
+      sourceEl.classList.remove('hidden');
+    } else {
+      sourceEl.classList.add('hidden');
+    }
+  }
+
+  function openAt(item) {
+    if (!item) { return; }
+    currentGroup = items.filter(function (candidate) { return candidate.group === item.group; });
+    position = Math.max(0, currentGroup.indexOf(item));
+    lastFocus = document.activeElement;
+    render();
+    lightbox.classList.add('is-open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+
+  function openFromImage(img) {
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].img === img) { openAt(items[i]); return; }
+    }
+  }
+
+  function close() {
+    lightbox.classList.remove('is-open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = '';
+    if (lastFocus && lastFocus.focus) { lastFocus.focus(); }
+  }
+
+  function step(delta) {
+    if (!currentGroup.length) { return; }
+    position = (position + delta + currentGroup.length) % currentGroup.length;
+    render();
+  }
+
+  document.addEventListener('click', function (event) {
+    var trigger = nearest(event.target, '.deck-zoom-trigger');
+    if (trigger) {
+      event.preventDefault();
+      event.stopPropagation();
+      var carousel = nearest(trigger, '.deck-carousel');
+      openFromImage(carousel ? carousel.querySelector('.deck-carousel-item.is-active') : null);
+      return;
+    }
+    var img = nearest(event.target, 'img.deck-zoomable');
+    if (img) {
+      event.preventDefault();
+      openFromImage(img);
+    }
+  });
+
+  document.addEventListener('keydown', function (event) {
+    var isOpen = lightbox.classList.contains('is-open');
+    if (isOpen) {
+      if (event.key === 'Escape') { close(); return; }
+      if (event.key === 'ArrowRight') { step(1); return; }
+      if (event.key === 'ArrowLeft') { step(-1); return; }
+      if (event.key === 'Tab') {
+        var focusable = [closeBtn, prevBtn, nextBtn];
+        var active = focusable.indexOf(document.activeElement);
+        event.preventDefault();
+        focusable[(active + (event.shiftKey ? -1 : 1) + focusable.length) % focusable.length].focus();
+      }
+      return;
+    }
+    var target = event.target;
+    if (target && target.nodeName === 'IMG' && target.classList.contains('deck-zoomable') && (event.key === 'Enter' || event.key === ' ')) {
+      event.preventDefault();
+      openFromImage(target);
+    }
+  });
+
+  closeBtn.addEventListener('click', close);
+  prevBtn.addEventListener('click', function () { step(-1); });
+  nextBtn.addEventListener('click', function () { step(1); });
+  lightbox.addEventListener('click', function (event) {
+    var target = event.target;
+    if (target === lightbox || target === image || nearest(target, '.deck-lightbox-backdrop')) {
+      close();
+    }
+  });
+})();
+</script>
+</body></html>
